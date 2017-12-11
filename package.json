@@ -6,6 +6,7 @@
   "dependencies": {
     "bitfinex-api-node": "^1.2.1",
     "dotenv": "^4.0.0",
+    "poloniex-api-node": "^1.6.5",
     "ws": "^3.3.2"
   },
   "devDependencies": {},
