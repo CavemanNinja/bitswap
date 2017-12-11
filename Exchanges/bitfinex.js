@@ -6,33 +6,27 @@ const bitfinex_socket = new Bitfinex(process.env.BITFINEX_API_KEY, process.env.B
     transform: true
 }).ws
 
-let bitfinex_BTC, bitfinex_ETH
-
-bitfinex_socket.on('auth', () => {
-    // emitted after .auth()
-    // needed for private api endpoints
-
-    console.log('authenticated')
-    // bws.submitOrder ...
-})
+const prices = new Map()
 
 bitfinex_socket.on('open', () => {
+    // authenticate
+    bitfinex_socket.auth()
+
+    //subscribe to tickers
     bitfinex_socket.subscribeTicker('BTCUSD')
     bitfinex_socket.subscribeTicker('ETHUSD')
+})
 
-    // authenticate
-    // bws.auth()
+bitfinex_socket.on('auth', () => {
+    console.log('[BITFINEX] authenticated')
 })
 
 bitfinex_socket.on('ticker', (pair, ticker) => {
-    switch (pair) {
-        case 'tBTCUSD':
-            bitfinex_BTC = ticker.LAST_PRICE
-            console.log(`[BITFINEX] [BTC] $${bitfinex_BTC}`)
-            break
-        case 'tETHUSD':
-            bitfinex_ETH = ticker.LAST_PRICE
-            console.log(`[BITFINEX] [ETH] $${bitfinex_ETH}`)
-            break
-    }
+    let symbol = pair.slice(1, 4)
+    prices.set(symbol, ticker.LAST_PRICE)
+    console.log(`[BITFINEX] [${symbol}] $${prices.get(symbol)}`)
 })
+
+exports.getPrice = (symbol) => {
+    return prices.get(symbol)
+}
