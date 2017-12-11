@@ -4,6 +4,8 @@
   "description": "cryptocurrency arbitrage",
   "main": "app.js",
   "dependencies": {
+    "bitfinex-api-node": "^1.2.1",
+    "dotenv": "^4.0.0",
     "ws": "^3.3.2"
   },
   "devDependencies": {},

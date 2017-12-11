@@ -1,12 +1,38 @@
 const ws = require('ws')
-const w = new ws('wss://api.bitfinex.com/ws/2')
+const Bitfinex = require('bitfinex-api-node')
 
-w.on('message', (msg) => console.log(msg))
+const bitfinex_socket = new Bitfinex(process.env.BITFINEX_API_KEY, process.env.BITFINEX_API_SECRET, {
+    version: 2,
+    transform: true
+}).ws
 
-let msg = JSON.stringify({
-	event: 'subscribe',
-	channel: 'ticker',
-	symbol: 'tBTCUSD'
+let bitfinex_BTC, bitfinex_ETH
+
+bitfinex_socket.on('auth', () => {
+    // emitted after .auth()
+    // needed for private api endpoints
+
+    console.log('authenticated')
+    // bws.submitOrder ...
 })
 
-w.on('open', () => w.send(msg))
+bitfinex_socket.on('open', () => {
+    bitfinex_socket.subscribeTicker('BTCUSD')
+    bitfinex_socket.subscribeTicker('ETHUSD')
+
+    // authenticate
+    // bws.auth()
+})
+
+bitfinex_socket.on('ticker', (pair, ticker) => {
+    switch (pair) {
+        case 'tBTCUSD':
+            bitfinex_BTC = ticker.LAST_PRICE
+            console.log(`[BITFINEX] [BTC] $${bitfinex_BTC}`)
+            break
+        case 'tETHUSD':
+            bitfinex_ETH = ticker.LAST_PRICE
+            console.log(`[BITFINEX] [ETH] $${bitfinex_ETH}`)
+            break
+    }
+})
