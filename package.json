@@ -1,0 +1,19 @@
+{
+  "name": "bitswap",
+  "version": "1.0.0",
+  "description": "cryptocurrency arbitrage",
+  "main": "app.js",
+  "dependencies": {
+    "ws": "^3.3.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://www.github.com/cavemanninja/bitswap.git"
+  },
+  "author": "jalal.albasri@gmail.com",
+  "license": "ISC"
+}
