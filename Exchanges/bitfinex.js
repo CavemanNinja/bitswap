@@ -1,3 +1,4 @@
+const Exchange = require('./Exchange.js')
 const ws = require('ws')
 const Bitfinex = require('bitfinex-api-node')
 
@@ -6,7 +7,7 @@ const bitfinex_socket = new Bitfinex(process.env.BITFINEX_API_KEY, process.env.B
     transform: true
 }).ws
 
-const prices = new Map()
+const bitfinexExchange = new Exchange('bitfinex')
 
 bitfinex_socket.on('open', () => {
     // authenticate
@@ -23,10 +24,7 @@ bitfinex_socket.on('auth', () => {
 
 bitfinex_socket.on('ticker', (pair, ticker) => {
     let symbol = pair.slice(1, 4)
-    prices.set(symbol, ticker.LAST_PRICE)
-    console.log(`[BITFINEX] [${symbol}] $${prices.get(symbol)}`)
+    bitfinexExchange.setPrice(symbol, ticker.LAST_PRICE)
 })
 
-exports.getPrice = (symbol) => {
-    return prices.get(symbol)
-}
+exports.exchange = bitfinexExchange

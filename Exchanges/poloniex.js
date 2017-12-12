@@ -2,15 +2,12 @@ const Exchange = require('./Exchange.js')
 const Poloniex = require('poloniex-api-node')
 const poloniex = new Poloniex(process.env.POLONIEX_API_KEY, process.env.POLONIEX_API_SECRET)
 
-// const prices = new Map()
 const poloniexExchange = new Exchange('poloniex')
 
 poloniex.on('message', (channelName, data, seq) => {
     if (data.currencyPair.slice(0, 4) === 'USDT') {
         let symbol = data.currencyPair.slice(5)
-        poloniexExchange.setPrice(sy)
-        prices.set(symbol, data.last)
-        console.log(`[POLONIEX] [${symbol}] $${data.last}`)
+        poloniexExchange.setPrice(symbol, data.last)
     }
 })
 
@@ -31,6 +28,4 @@ poloniex.openWebSocket({
     version: 2
 })
 
-exports.getPrice = (symbol) => {
-    return prices.get(symbol)
-}
+exports.exchange = poloniexExchange
