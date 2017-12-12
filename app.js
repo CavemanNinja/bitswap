@@ -1,4 +1,5 @@
 require('dotenv').config()
+const colors = require('colors')
 
 const exchanges = new Set
 const symbols = new Map
@@ -64,9 +65,25 @@ function calcOpportunity(symbol) {
 
     let diff = ((symbols.get(symbol).high.getPrice(symbol) / symbols.get(symbol).low.getPrice(symbol) - 1) * 100).toFixed(3)
 
-    console.log(`calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%] [${o}]`)
+    let output
 
+    if (symbol === 'BTC') {
+        output = colors.yellow(`calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, ` +
+            `low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%]`)
+    } else if (symbol === 'ETH') {
+        output = colors.magenta(`calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, ` +
+            `low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%]`)
+    } else {
+        output = `calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, ` +
+            `low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%]`
+    }
 
+    if (o > 0) {
+        output += colors.green(` [${o}]`)
+    } else {
+        output += colors.red(` [${o}]`)
+    }
 
+    console.log(output)
 
 }
