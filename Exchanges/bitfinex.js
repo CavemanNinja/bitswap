@@ -3,6 +3,8 @@ const ws = require('ws')
 const request = require('request')
 const Bitfinex = require('bitfinex-api-node')
 
+const TETHER = process.argv[2] || 'BTC'
+
 const bitfinex_socket = new Bitfinex(process.env.BITFINEX_API_KEY, process.env.BITFINEX_API_SECRET, {
     version: 2,
     transform: true
@@ -19,7 +21,8 @@ bitfinex_socket.on('open', () => {
         json: true
     }, (error, response, body) => {
         for (let pair of body) {
-            if (pair.endsWith('usd')) {
+            // if (pair.endsWith('usd')) {
+            if (pair.endsWith(TETHER.toLowerCase())) {
                 bitfinex_socket.subscribeTicker(pair)
             }
         }
@@ -31,7 +34,7 @@ bitfinex_socket.on('auth', () => {
 })
 
 bitfinex_socket.on('ticker', (pair, ticker) => {
-    let groups = pair.match(/t(\w{3,})(?:USD)/)
+    let groups = pair.match(new RegExp(`t(\\w{3,})(?:${TETHER})`))
     if (groups && groups.length > 1) {
         let symbol = groups[1]
         bitfinexExchange.setPrice(symbol, ticker.LAST_PRICE)

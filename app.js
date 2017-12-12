@@ -4,6 +4,9 @@ const colors = require('colors')
 const exchanges = new Set
 const symbols = new Map
 
+const TETHER = process.argv[2] || 'BTC'
+
+console.log(`bitswap started, tether currency ${TETHER}`)
 
 exchanges.add(require('./Exchanges/bitfinex').exchange)
 exchanges.add(require('./Exchanges/poloniex').exchange)
@@ -41,7 +44,6 @@ function addSymbol(symbol, exchange) {
 
     // console.log(`addSymbol() ${symbol} ${exchange}`)
     // console.log(symbols.get(symbol))
-    // console.log(`addSymbol() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}`)
 
 }
 
@@ -67,6 +69,7 @@ function calcOpportunity(symbol) {
 
     let output
 
+    //TODO Improve logging
     if (symbol === 'BTC') {
         output = colors.yellow(`calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, ` +
             `low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%]`)
