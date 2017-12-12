@@ -19,7 +19,7 @@ bitfinex_socket.on('open', () => {
         json: true
     }, (error, response, body) => {
         for (let pair of body) {
-            if (pair.endsWith('usd')) {
+            if (pair.endsWith('btc')) {
                 bitfinex_socket.subscribeTicker(pair)
             }
         }
@@ -31,8 +31,8 @@ bitfinex_socket.on('auth', () => {
 })
 
 bitfinex_socket.on('ticker', (pair, ticker) => {
-    let groups = pair.match(/t(\w{3,4})(?:USD)/)
-    if (groups.length > 1) {
+    let groups = pair.match(/t(\w{3,4})(?:BTC)/)
+    if (groups && groups.length > 1) {
         let symbol = groups[1]
         bitfinexExchange.setPrice(symbol, ticker.LAST_PRICE)
     }

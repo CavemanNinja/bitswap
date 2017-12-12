@@ -45,6 +45,6 @@ function addSymbol(symbol, exchange) {
 }
 
 function calcOpportunity(symbol) {
-    console.log(`calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}`)
+    // console.log(`calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}`)
 
 }
