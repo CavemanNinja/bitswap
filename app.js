@@ -45,6 +45,28 @@ function addSymbol(symbol, exchange) {
 }
 
 function calcOpportunity(symbol) {
-    // console.log(`calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}`)
+
+    // x ammount of BTC used to buy ether
+    let x = 100
+    // y ammount of ETH bought
+    let y
+    // p price in BTC at the low wxchange
+    let p = symbols.get(symbol).low.getPrice(symbol)
+    // q price in BTC at the high wxchange
+    let q = symbols.get(symbol).high.getPrice(symbol)
+    // f fee at low exchange
+    let f = symbols.get(symbol).low.fee
+    // g fee at high exchange
+    let g = symbols.get(symbol).high.fee
+
+    // o opportunity (amount of btc gained)
+    let o = x * ((q / p) * (1 - f) * (1 - g) - 1)
+
+    let diff = ((symbols.get(symbol).high.getPrice(symbol) / symbols.get(symbol).low.getPrice(symbol) - 1) * 100).toFixed(3)
+
+    console.log(`calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%] [${o}]`)
+
+
+
 
 }

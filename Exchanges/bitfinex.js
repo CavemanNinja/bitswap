@@ -8,7 +8,7 @@ const bitfinex_socket = new Bitfinex(process.env.BITFINEX_API_KEY, process.env.B
     transform: true
 }).ws
 
-const bitfinexExchange = new Exchange('bitfinex')
+const bitfinexExchange = new Exchange('bitfinex', 0.002)
 
 bitfinex_socket.on('open', () => {
     // authenticate
@@ -19,7 +19,7 @@ bitfinex_socket.on('open', () => {
         json: true
     }, (error, response, body) => {
         for (let pair of body) {
-            if (pair.endsWith('btc')) {
+            if (pair.endsWith('usd')) {
                 bitfinex_socket.subscribeTicker(pair)
             }
         }
@@ -31,7 +31,7 @@ bitfinex_socket.on('auth', () => {
 })
 
 bitfinex_socket.on('ticker', (pair, ticker) => {
-    let groups = pair.match(/t(\w{3,})(?:BTC)/)
+    let groups = pair.match(/t(\w{3,})(?:USD)/)
     if (groups && groups.length > 1) {
         let symbol = groups[1]
         bitfinexExchange.setPrice(symbol, ticker.LAST_PRICE)

@@ -2,9 +2,10 @@ const EventEmitter = require('events').EventEmitter
 
 module.exports = class Exchange extends EventEmitter {
 
-    constructor(name) {
+    constructor(name, fee) {
         super()
         this._name = name
+        this._fee = fee
         this.prices = new Map()
     }
 
@@ -14,6 +15,13 @@ module.exports = class Exchange extends EventEmitter {
 
     set name(value) {
         this._name = value
+    }
+    get fee() {
+        return this._fee
+    }
+
+    set fee(value) {
+        this._fee = value
     }
 
     getPrice(symbol) {

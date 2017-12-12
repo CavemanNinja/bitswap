@@ -2,11 +2,11 @@ const Exchange = require('./Exchange')
 const Poloniex = require('poloniex-api-node')
 const poloniex = new Poloniex(process.env.POLONIEX_API_KEY, process.env.POLONIEX_API_SECRET)
 
-const poloniexExchange = new Exchange('poloniex')
+const poloniexExchange = new Exchange('poloniex', 0.0025)
 
 poloniex.on('message', (channelName, data, seq) => {
-    if (data.currencyPair.slice(0, 3) === 'BTC') {
-        let symbol = data.currencyPair.slice(4)
+    if (data.currencyPair.slice(0, 4) === 'USDT') {
+        let symbol = data.currencyPair.slice(5)
         poloniexExchange.setPrice(symbol, data.last)
     }
 })
