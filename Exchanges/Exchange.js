@@ -1,6 +1,9 @@
-module.exports = class Exchange {
+const EventEmitter = require('events').EventEmitter
+
+module.exports = class Exchange extends EventEmitter {
 
     constructor(name) {
+        super()
         this._name = name
         this.prices = new Map()
     }
@@ -18,9 +21,10 @@ module.exports = class Exchange {
     }
 
     setPrice(symbol, price) {
-        //TODO set freshness
+        //TODO set timestamp
         this.prices.set(symbol, price)
-        this.sayPrice(symbol)
+        // this.sayPrice(symbol)
+        this.emit('price_change', symbol)
     }
 
     sayPrice(symbol) {

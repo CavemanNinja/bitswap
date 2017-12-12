@@ -1,4 +1,4 @@
-const Exchange = require('./Exchange.js')
+const Exchange = require('./Exchange')
 const Poloniex = require('poloniex-api-node')
 const poloniex = new Poloniex(process.env.POLONIEX_API_KEY, process.env.POLONIEX_API_SECRET)
 

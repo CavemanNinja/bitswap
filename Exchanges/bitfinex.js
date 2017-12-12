@@ -1,4 +1,4 @@
-const Exchange = require('./Exchange.js')
+const Exchange = require('./Exchange')
 const ws = require('ws')
 const request = require('request')
 const Bitfinex = require('bitfinex-api-node')
