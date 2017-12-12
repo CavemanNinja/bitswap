@@ -31,7 +31,7 @@ bitfinex_socket.on('auth', () => {
 })
 
 bitfinex_socket.on('ticker', (pair, ticker) => {
-    let groups = pair.match(/t(\w{3,4})(?:BTC)/)
+    let groups = pair.match(/t(\w{3,})(?:BTC)/)
     if (groups && groups.length > 1) {
         let symbol = groups[1]
         bitfinexExchange.setPrice(symbol, ticker.LAST_PRICE)
