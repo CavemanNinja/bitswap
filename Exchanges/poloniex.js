@@ -5,8 +5,8 @@ const poloniex = new Poloniex(process.env.POLONIEX_API_KEY, process.env.POLONIEX
 const poloniexExchange = new Exchange('poloniex')
 
 poloniex.on('message', (channelName, data, seq) => {
-    if (data.currencyPair.slice(0, 4) === 'USDT') {
-        let symbol = data.currencyPair.slice(5)
+    if (data.currencyPair.slice(0, 3) === 'BTC') {
+        let symbol = data.currencyPair.slice(4)
         poloniexExchange.setPrice(symbol, data.last)
     }
 })
