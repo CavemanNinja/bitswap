@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "bitfinex-api-node": "^1.2.1",
+    "colors": "^1.1.2",
     "dotenv": "^4.0.0",
     "heap": "^0.2.6",
     "poloniex-api-node": "^1.6.5",
