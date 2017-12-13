@@ -36,6 +36,6 @@ module.exports = class Exchange extends EventEmitter {
     }
 
     sayPrice(symbol) {
-        console.log(`[${this.name.toUpperCase()}] [${symbol}] $${this.prices.get(symbol)}`)
+        console.log(`[${this.name.toUpperCase()}] [${symbol}] ${this.prices.get(symbol)}`)
     }
 }

@@ -2,94 +2,96 @@ require('dotenv').config()
 const colors = require('colors')
 
 const exchanges = new Set
-const symbols = new Map
+const pairs = new Map
 
-const TETHER = process.argv[2] || 'BTC'
+const FILTER = process.argv[2]
 
-console.log(`bitswap started, tether currency ${TETHER}`)
+console.log(`bitswap started, filter currency ${FILTER}`)
+
+//TODO need to upgrade to keep track of pairs instad of pair...
 
 exchanges.add(require('./Exchanges/bitfinex').exchange)
 exchanges.add(require('./Exchanges/poloniex').exchange)
 
 for (let exchange of exchanges) {
-    exchange.on('price_change', (symbol) => {
-        addSymbol(symbol, exchange)
+    exchange.on('price_change', (pair) => {
+        addpair(pair, exchange)
     })
 }
 
-function addSymbol(symbol, exchange) {
-    //add a new symbol
-    if (!symbols.has(symbol)) {
-        symbols.set(symbol, {
+function addpair(pair, exchange) {
+    //add a new pair
+    if (!pairs.has(pair)) {
+        pairs.set(pair, {
             high: null,
             low: null
         })
     }
 
-    let oldHigh = symbols.get(symbol).high
-    let oldLow = symbols.get(symbol).low
+    let oldHigh = pairs.get(pair).high
+    let oldLow = pairs.get(pair).low
 
-    if (symbols.get(symbol).high === null ||
-        exchange.getPrice(symbol) > symbols.get(symbol).high.getPrice(symbol)) {
-        symbols.get(symbol).high = exchange
+    if (pairs.get(pair).high === null ||
+        exchange.getPrice(pair) > pairs.get(pair).high.getPrice(pair)) {
+        pairs.get(pair).high = exchange
     }
 
-    if (symbols.get(symbol).low === null ||
-        exchange.getPrice(symbol) < symbols.get(symbol).low.getPrice(symbol)) {
-        symbols.get(symbol).low = exchange
+    if (pairs.get(pair).low === null ||
+        exchange.getPrice(pair) < pairs.get(pair).low.getPrice(pair)) {
+        pairs.get(pair).low = exchange
     }
 
-    if (symbols.get(symbol).high !== null &&
-        symbols.get(symbol).low !== null &&
-        symbols.get(symbol).high.name !== symbols.get(symbol).low.name) {
-        calcOpportunity(symbol)
+    if (pairs.get(pair).high !== null &&
+        pairs.get(pair).low !== null &&
+        pairs.get(pair).high.name !== pairs.get(pair).low.name) {
+        calcOpportunity(pair)
     }
 
-    if (oldHigh !== null && oldLow !== null && symbols.get(symbol).high !== null && symbols.get(symbol).low !== null &&
-        oldHigh !== symbols.get(symbol).high && oldLow !== symbols.get(symbol).low
+    if (oldHigh !== null && oldLow !== null && pairs.get(pair).high !== null && pairs.get(pair).low !== null &&
+        oldHigh !== pairs.get(pair).high && oldLow !== pairs.get(pair).low
     ) {
-        console.log(colors.cyan(`[MARKETS SWITCHED] ${symbol}`))
+        console.log(colors.cyan(`[MARKETS SWITCHED] ${pair}`))
     }
 
 
-    // console.log(`addSymbol() ${symbol} ${exchange}`)
-    // console.log(symbols.get(symbol))
+    // console.log(`addpair() ${pair} ${exchange}`)
+    // console.log(pairs.get(pair))
 
 }
 
-function calcOpportunity(symbol) {
+function calcOpportunity(pair) {
 
     // x ammount of BTC used to buy ether
     let x = 0.08
     // y ammount of ETH bought
     let y
     // p price in BTC at the low wxchange
-    let p = symbols.get(symbol).low.getPrice(symbol)
+    let p = pairs.get(pair).low.getPrice(pair)
     // q price in BTC at the high wxchange
-    let q = symbols.get(symbol).high.getPrice(symbol)
+    let q = pairs.get(pair).high.getPrice(pair)
     // f fee at low exchange
-    let f = symbols.get(symbol).low.fee
+    let f = pairs.get(pair).low.fee
     // g fee at high exchange
-    let g = symbols.get(symbol).high.fee
+    let g = pairs.get(pair).high.fee
 
     // o opportunity (amount of btc gained)
     let o = x * ((q / p) * (1 - f) * (1 - g) - 1)
 
-    let diff = ((symbols.get(symbol).high.getPrice(symbol) / symbols.get(symbol).low.getPrice(symbol) - 1) * 100).toFixed(3)
+    let diff = ((pairs.get(pair).high.getPrice(pair) / pairs.get(pair).low.getPrice(pair) - 1) * 100).toFixed(3)
 
     let output
 
-    if (process.argv[3] && symbol === process.argv[3] || !process.argv[3]) {
+    if (FILTER && pair === FILTER || !FILTER) {
         //TODO Improve logging
-        if (symbol === 'BTC') {
-            output = colors.yellow(`calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, ` +
-                `low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%]`)
-        } else if (symbol === 'ETH') {
-            output = colors.magenta(`calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, ` +
-                `low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%]`)
+        if (pair === 'BTC') {
+            output = colors.yellow(`calcOpportunitty() [${pair}] high: ${pairs.get(pair).high.name} ${pairs.get(pair).high.getPrice(pair)}, ` +
+                `low: ${pairs.get(pair).low.name} ${pairs.get(pair).low.getPrice(pair)}, [${diff}%]`)
+        } else if (pair === 'ETH') {
+            output = colors.magenta(`calcOpportunitty() [${pair}] high: ${pairs.get(pair).high.name} ${pairs.get(pair).high.getPrice(pair)}, ` +
+                `low: ${pairs.get(pair).low.name} ${pairs.get(pair).low.getPrice(pair)}, [${diff}%]`)
         } else {
-            output = `calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, ` +
-                `low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%]`
+            output = `calcOpportunitty() [${pair}] high: ${pairs.get(pair).high.name} ${pairs.get(pair).high.getPrice(pair)}, ` +
+                `low: ${pairs.get(pair).low.name} ${pairs.get(pair).low.getPrice(pair)}, [${diff}%]`
         }
 
         if (o > 0) {
