@@ -26,6 +26,9 @@ function addSymbol(symbol, exchange) {
         })
     }
 
+    let oldHigh = symbols.get(symbol).high
+    let oldLow = symbols.get(symbol).low
+
     if (symbols.get(symbol).high === null ||
         exchange.getPrice(symbol) > symbols.get(symbol).high.getPrice(symbol)) {
         symbols.get(symbol).high = exchange
@@ -42,6 +45,13 @@ function addSymbol(symbol, exchange) {
         calcOpportunity(symbol)
     }
 
+    if (oldHigh !== null && oldLow !== null && symbols.get(symbol).high !== null && symbols.get(symbol).low !== null &&
+        oldHigh !== symbols.get(symbol).high && oldLow !== symbols.get(symbol).low
+    ) {
+        console.log(colors.cyan(`[MARKETS SWITCHED] ${symbol}`))
+    }
+
+
     // console.log(`addSymbol() ${symbol} ${exchange}`)
     // console.log(symbols.get(symbol))
 
@@ -50,7 +60,7 @@ function addSymbol(symbol, exchange) {
 function calcOpportunity(symbol) {
 
     // x ammount of BTC used to buy ether
-    let x = 100
+    let x = 0.08
     // y ammount of ETH bought
     let y
     // p price in BTC at the low wxchange
@@ -69,24 +79,28 @@ function calcOpportunity(symbol) {
 
     let output
 
-    //TODO Improve logging
-    if (symbol === 'BTC') {
-        output = colors.yellow(`calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, ` +
-            `low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%]`)
-    } else if (symbol === 'ETH') {
-        output = colors.magenta(`calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, ` +
-            `low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%]`)
-    } else {
-        output = `calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, ` +
-            `low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%]`
+    if (process.argv[3] && symbol === process.argv[3] || !process.argv[3]) {
+        //TODO Improve logging
+        if (symbol === 'BTC') {
+            output = colors.yellow(`calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, ` +
+                `low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%]`)
+        } else if (symbol === 'ETH') {
+            output = colors.magenta(`calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, ` +
+                `low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%]`)
+        } else {
+            output = `calcOpportunitty() [${symbol}] high: ${symbols.get(symbol).high.name} ${symbols.get(symbol).high.getPrice(symbol)}, ` +
+                `low: ${symbols.get(symbol).low.name} ${symbols.get(symbol).low.getPrice(symbol)}, [${diff}%]`
+        }
+
+        if (o > 0) {
+            output += colors.green(` [${o}]`)
+        } else {
+            output += colors.red(` [${o}]`)
+        }
+
+        console.log(output)
     }
 
-    if (o > 0) {
-        output += colors.green(` [${o}]`)
-    } else {
-        output += colors.red(` [${o}]`)
-    }
 
-    console.log(output)
 
 }
