@@ -20,7 +20,10 @@ poloniex.on('open', () => {
 })
 
 poloniex.on('close', (reason, details) => {
-    console.log('Poloniex WebSocket connection disconnected ' + reason)
+    console.log('Poloniex WebSocket connection disconnected ' + JSON.stringify(reason))
+    poloniex.openWebSocket({
+        version: 2
+    })
 })
 
 poloniex.on('error', (error) => {
